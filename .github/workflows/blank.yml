@@ -140,17 +140,11 @@ jobs:
           "RDP_PASSWORD=$password" | Out-File -FilePath $env:GITHUB_ENV -Append
           Write-Host "RDP user created." -ForegroundColor Green
 
+    # ─────────────────────────────────────────────
+      # 7. CONECTAR TAILSCALE
       # ─────────────────────────────────────────────
-      # 7. INSTALAR TAILSCALE
-      # ─────────────────────────────────────────────
-      - name: Install & Connect Tailscale
+      - name: Connect Tailscale
         run: |
-          $tsUrl = "https://pkgs.tailscale.com/stable/tailscale-setup-1.82.0-amd64.msi"
-          $installer = "$env:TEMP\tailscale.msi"
-          Invoke-WebRequest -Uri $tsUrl -OutFile $installer -UseBasicParsing
-          Start-Process msiexec.exe -ArgumentList "/i","`"$installer`"","/quiet","/norestart" -Wait
-          Remove-Item $installer -Force
-
           $ts = "$env:ProgramFiles\Tailscale\tailscale.exe"
           & $ts up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --hostname=gh-runner-$env:GITHUB_RUN_ID
 
